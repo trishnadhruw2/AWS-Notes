@@ -1,0 +1,45 @@
+send email notification when a specific instance stop in production environment:
+=====================================================================================
+Step1: Create EC2 Instance:
+create ec2 install with ami linux2 and launch it.
+=====================================================================================
+Step2: Create SNS topic:
+service -SNS- create new topic - topic name (prod-alerts) - display name(prodalert) - create topic.
+
+select topic - action - subscribe to topic - protocol (Email) - endpoint (hackwithabhi@gmail.com) - create subscription.
+
+go to email - open email- confirm subscription.
+=====================================================================================
+Step3: Create IAM Policy:
+
+Service - IAM -  policies - create policy - choose a service ( SNS) - Action (All SNS action) - resouces (all resources) -  add additional permission - choose a service (cloudwatch logs) - Action (all cloudwatch logs actions) - Resources (all resources) - review policy - name (sns_cloudwatch_log_prod_alerts) - create policy. 
+=====================================================================================
+Step4: Create IAM Role:
+Service - IAM -  roles - aws service - lamda - next:permission - policy type (sns_cloudwatch_log_prod_alerts) - next:review - Role name (sns_cloudwatch_log_prod_alerts) - create role.
+=====================================================================================
+Step5: Create Lambda Function:
+services - lambda - create function - name (sns_cloudwatch_log_prod_alerts) - runtime(python 3.6) role (change default execution role) - existing role(sns_cloudwatch_log_prod_alerts) - create function.
+
+import boto3
+client = boto3.client('sns')
+
+def lambda_handler(event, context):
+	topic_arn = 'arn:aws:sns:ap-south-1:148574222198:prod-alerts'  
+	message = 'Prod web server stopped please check it on high priority'
+	client.publish(TopicArn=topic_arn,Message=message)
+
+save. Test - event template (hello world) - Event Name (dummy) - create.
+
+if responce is null code is working fine, also check email.
+
+Add Triggers (cloudwatch events) - configure triggers - rule (create a new rule) - rule name (prod_alerts)- rule type (event patten) EC2 (EC2 instance state-change notification)  - Details (state,Instance) - state (stopped) - instances - instance ID ( i-0423rgg4345343 - paste here running instance ID) - enable trigger - Add. Save.
+=====================================================================================
+Step6:
+
+For verify go to ec2 instance and stop running instance.
+
+
+
+
+
+

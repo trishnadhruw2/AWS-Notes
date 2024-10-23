@@ -1,0 +1,158 @@
+1.Introduction to Automated Provisioning:
+Automated provisioning means having the ability to deploy information technology or telecommunications services using predeﬁned automated procedures without requiring human interventions.
+========================================================================================
+2. benefit of automated provisioning:
+
+Automated provisioning helps secure and speed up the provisioning of user access, which helps secure, scale and optimize the onboarding and lifecycle management process.
+========================================================================================
+3. AWS CloudFormation :
+AWS CloudFormation is a service that helps you model and setup your AWS resources so that you can spend less time to managing those resources and more time focusing on your applications that run in AWS.
+You create template that describes all the AWS resources that you want(ec2,RDS) and cloudformation takes care of provisioning and configuring those resources for you.
+you dont need to individually ceate and configure AWS resources and figure out whats dependent on what,cloud formation handlers that.
+
+CloudFormation help you to -
+- simplify infrastructure management.
+- quickly replicate your infrastructue
+- easily control and track changes to your infrastructure.
+
+AWS CloudFormation is a service that gives developers and businesses an easy way to create a collection of related AWS and third-party resources, and provision and manage them in an orderly and predictable fashion.
+=======================================================================================
+Define the AWS CloudFormation Concepts-
+when you use AWS cloudformation you work with templates that stacks. you create template to describe you AWS resources and theire properties.
+Whenever you create a stack, cloudformation provisions the resources that are described in your template.
+=========================================================================================
+What is cloudformation template:
+A cloudformation template is a json or yaml formatted text file.
+you can save these file with any extension,such as .json,.template,.yml or .txt.
+cloudformation uses these templates as a blueprints for building your AWS resources.
+For example in a tempate you can describe an Amazone ec2 instance,such as the instance type, ec2 key paire etc.
+whenever create a stack,you also specify a tempate that cloudformation uses to create whatever you describe in template.
+=========================================================================================
+what is AWS cloudformation stack:
+when you use cloudformation,you manage related resources as a single unit called a stack.
+you create,update and delete a collection of resources by creating ,updating and deleting stacks.
+all the resoruce in stack are defined by the stacks cloudformation template.
+suppose you create a template that inculdes an auto scaling group,elastic load balancer and amazon relational database service .
+to create those resources , you create stack by submitting the template that you created and cloudformation provisions all those resources for you.
+you can work with stacks by using the cloudformaton console,API or AWS CLI.
+=========================================================================================
+what is yaml:
+yaml is programming language
+it is used for write configuration files such as ansible playbook, kubernetes pod, CloudFormation templates etc.
+
+=========================================================================================
+ Create Stack
+
+create template1.yml on desktop
+======================================
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  DevEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0cff7528ff583bf9a
+      InstanceType: t2.micro
+      KeyName: cfn-key-1
+=========================================
+Services - CloudFormation - Create Stack - Template is ready - Specify Template(upload a template file) - choose create template file of yml(template1.yml) - Next - stack name (stack1) - next - create a stack.
+
+For verify go to EC2 instance 
+check instance automatically creating.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+vpc,subnet,igw,routing,security group.
+cloudfromation - ( yam,json format )
+
+create ec2 windows,amazon, ubunt - apache webserver,nginx,mysql,docker container
+
+
+
+===============================================================================
+template examples
+
+Create AMI Linux Instance:
+
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  DevEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-06672d07f62285d1d
+      InstanceType: t2.micro
+      KeyName: london-server
+  DevEC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-023665fdad063c8a9
+      InstanceType: t2.micro
+      KeyName: london-server
+===========================================================================
+Create Windows Server 2016 Instance:
+
+AWSTemplateFormatVersion: "2010-09-09"
+Resources:
+  WebInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: ami-04d2c1906646090c8
+      KeyName: london-server
+      SecurityGroupIds:
+        - sg-0043fa499fca997c2
+      SubnetId: subnet-03ddbc512ef4f7f95
+      Tags:
+        -
+          Key: Name
+          Value: windows2016
+===========================================================================
+create 2 AMI Linux instances:
+
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  DevEC2Instance1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0f5470fce514b0d36
+      InstanceType: t2.micro
+      KeyName: Linux-Server-London
+      SecurityGroupIds:
+        - sg-037f734d3198aa10d
+      SubnetId: subnet-07c6f1fd80ff7d0b6
+      Tags:
+        -
+          Key: Name
+          Value: webserver1
+  DevEC2Instance2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0aaa5410833273cfe
+      InstanceType: t2.micro
+      KeyName: Linux-Server-London
+      SecurityGroupIds:
+        - sg-037f734d3198aa10d
+      SubnetId: subnet-07c6f1fd80ff7d0b6
+      Tags:
+        -
+          Key: Name
+          Value: webserver2

@@ -1,0 +1,22 @@
+DNS ( Domain Name Service)
+
+Domain name resolution is the process of converting a domain name into an IP address.
+It use port number 53.
+
+The Internet's DNS system works much like a phone book by managing the mapping between names and numbers. DNS servers translate requests for names into IP addresses, controlling which server an end user will reach when they type a domain name into their web browser.
+=====================================
+DNS server types
+There are several server types involved in completing a DNS resolution. The following list describes the four name servers in the order a query passes through them. They provide the domain name being sought or referrals to other name servers.
+
+Recursive server. 
+The recursive server takes DNS queries from an application, such as a web browser. It's the first resource the user accesses and either provides the answer to the query if it has it cached or accesses the next-level server if it doesn't. This server may go through several iterations of querying before returning an answer to the client.
+
+Root name server:
+This server is the first place the recursive server sends a query if it doesn't have the answer cached. The root name server is an index of all the servers that will have the information being queried. These servers are overseen by the Internet Corporation for Assigned Names and Numbers, specifically a branch of ICANN called the Internet Assigned Numbers Authority.
+
+TLD server(Top Level Domain server):
+ The root server directs the query based on the top-level domain -- the .com, .edu or .org in the URL. This is a more specific part of the lookup.
+
+Authoritative name server. 
+The authoritative name server is the final checkpoint for the DNS query. These servers know everything about a given domain and deal with the subdomain part of the domain name. These servers contain DNS resource records with specific information about a domain, such as the A record. They return the necessary record to the recursive server to send back to the client and cache it closer to the client for future lookups.
+

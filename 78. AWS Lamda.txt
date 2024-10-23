@@ -1,0 +1,74 @@
+Introduction to Serverless Computing:
+
+Serverless is a cloud computing application development and execution model that enables developers to build and run application code without provisioning or managing servers or backend infrastructure.
+=========================================================================================
+Introduction to Lambda:
+AWS Lambda is a serverless compute service that lets you run your code without worrying about provisioning or managing any server. You can run your application or backend service using AWS Lambda with zero administration. Just upload your code on Lambda, and it will run your code, even scale the infrastructure with high availability.
+
+The code which you run on AWS Lambda is called a lambda function. Currently, it supports the following programming languages:
+
+Java
+Python
+C#
+Node.js
+Go
+PowerShell
+Ruby
+
+It also provides a runtime API that can be used to run functions written in other (native) programming languages.
+
+To work with AWS Lambda, there is only one prerequisite; you should have an account on AWS from where you can access the AWS management console.
+
+You can call Lambda is FaaS (Function-as-a-Service) by AWS.
+
+=========================================================================================
+AWS Lambda Features
+Below are some of the important features offered by AWS Lambda:
+
+AWS Lambda easily scales the infrastructure without any additional configuration. It reduces the operational work involved.
+It offers multiple options like AWS S3, CloudWatch, DynamoDB, API Gateway, Kinesis, CodeCommit, and many more to trigger an event.
+You don’t need to invest upfront. You pay only for the memory used by the lambda function and minimal cost on the number of requests hence cost-efficient.
+AWS Lambda is secure. It uses AWS IAM to define all the roles and security policies.
+It offers fault tolerance for both services running the code and the function. You do not have to worry about the application down.
+
+=========================================================================================
+Create IAM role for Lambda function:
+
+services- IAM - Roles - Create roles - AWS Service - lambda - select AmazonS3FullAccess - next - Role name (lambda_s3_access) -create role.
+=================================================================================
+
+Create lambda function
+
+services - lambda - create function - Author from scartch - name (test) - runtime (python3.6) - Role - (choose an existing role) - Existing Role (Lambda_basic_excution) - create function.
+
+def lambda_handler(event, context):
+	print("This is my test lambda function")	
+	return 'hellow From Lambda'
+
+
+click on =save.
+click on =test.
+
+Event name (test) - create - test. 
+
+Execution result is succeeded (click on details)
+
+=========================================================================================
+Triggering Lambda Functions:
+
+Create lamada function
+
+services - lamada - create function - Author from scartch - name (cronlambda) - runtime (python3.6) - Role - (choose an existing role) - Existing Role (Lambda_basic_excution) - create function.
+
+def lambda_handler(event, context):
+	print("This is my test lambda function")	
+	return 'hellow From Lambda'
+
+click on "+ Add Trigger" - Trigger Configuration - EventBridge(cloudwatch Events) - rule (ceate a new rule) - rule name (cron) - Schedule expression "rate(2 minutes)" - enable trigger (add checkbox) - Add. 
+
+For verify:
+click on Monitor, it run lambda function every2 min.
+
+=========================================================================================
+
+
