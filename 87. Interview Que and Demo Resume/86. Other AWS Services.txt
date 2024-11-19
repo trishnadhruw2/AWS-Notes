@@ -1,0 +1,55 @@
+Other AWS Services:
+Amazon Web Services, Inc. is a subsidiary of Amazon that provides on-demand cloud computing platforms and APIs to individuals, companies, and governments, on a metered pay-as-you-go basis. These cloud computing web services provide distributed computing processing capacity and software tools via AWS server farms.
+=========================================================================================
+1. Introduction to AWS SnowBall.
+
+2. Introduction to AWS SnowMobile.
+
+3. Introduction to AWS Kenisis.
+
+4. Introduction to AWS Lex.
+
+5. Introduction to AWS Poly.
+
+6. Introduction to AWS SES.
+
+7. Introduction to AWS CodeCommit.
+
+8. Introduction to AWS CodeBuild.
+
+9. Introduction to AWS CodePipeLine.
+
+10. Introduction to AWS ECS.
+
+=========================================================================================
+What is snowball in AWS?
+AWS Snowball is a service that provides secure, rugged devices, so you can bring AWS computing and storage capabilities to your edge environments, and transfer data into and out of AWS. Those rugged devices are commonly referred to as AWS Snowball or AWS Snowball Edge devices
+=========================================================================================
+What is Snowmobile in AWS?
+AWS Snowmobile is an Exabyte-scale data transfer service used to move extremely large amounts of data to AWS. You can transfer up to 100PB per Snowmobile, a 45-foot long ruggedized shipping container, pulled by a semi-trailer truck.
+=========================================================================================
+What is AWS Kinesis?
+Image result for Introduction to AWS Kinesis
+Amazon Kinesis Data Streams is a serverless streaming data service that makes it easy to capture, process, and store data streams at any scale.
+=========================================================================================
+What is Amazon Lex in AWS?
+Amazon Lex is an AWS service for building conversational interfaces for applications using voice and text. With Amazon Lex, the same conversational engine that powers Amazon Alexa is now available to any developer, enabling you to build sophisticated, natural language chatbots into your new and existing applications.
+=========================================================================================
+Introduction to AWS Poly.
+Amazon Polly is a service that turns text into lifelike speech, allowing you to create applications that talk, and build entirely new categories of speech-enabled products. Polly's Text-to-Speech (TTS) service uses advanced deep learning technologies to synthesize natural sounding human speech.
+=========================================================================================
+Introduction to AWS SES.
+Amazon SES is a cloud email service provider that can integrate into any application for bulk email sending. Whether you send transactional or marketing emails, you pay only for what you use. Amazon SES also supports a variety of deployments including dedicated, shared, or owned IP addresses
+=========================================================================================
+Introduction to AWS CodeCommit.
+AWS CodeCommit is a secure, highly scalable, managed source control service that hosts private git repositories. CodeCommit eliminates the need for you to operate your own source control system and there is no hardware to provision and scale or software to install, configure, and operate.
+=========================================================================================
+Introduction to AWS CodeBuild.
+AWS CodeBuild is a fully managed continuous integration service that compiles source code, runs tests, and produces software packages that are ready to deploy. You don't need to provision, manage, and scale your own build servers.
+=========================================================================================
+Introduction to AWS CodePipeLine.
+AWS CodePipeline is a continuous delivery service you can use to model, visualize, and automate the steps required to release your software. You can quickly model and configure the different stages of a software release process. CodePipeline automates the steps required to release your software changes continuously
+=========================================================================================
+Introduction to AWS ECS.
+Amazon Elastic Container Service (ECS) is a highly scalable, high performance container management service that supports Docker containers and allows you to easily run applications on a managed cluster of Amazon Elastic Compute Cloud (Amazon EC2) instances
+=========================================================================================
