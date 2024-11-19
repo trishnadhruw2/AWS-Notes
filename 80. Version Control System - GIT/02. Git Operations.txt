@@ -1,0 +1,201 @@
+Steps for manage git
+==================================================
+Step1: Start AMI Linux 
+
+Access it using putty
+$su root
+update installed packages
+#yum update -y
+===================================================
+Step2: Install git
+
+Verify git is installed?
+
+#git --version
+#rpm -q git
+#yum info git
+#which git
+
+For install git
+#yum info git
+#yum install git
+
+Verify again
+#rpm -q git
+
+==================================================
+Step3: Create git repository
+
+#mkdir /punegit
+#cd /punegit
+#git init
+
+Create user and email for git operation
+
+#git config --global user.name sara
+#git config --global user.email sara@gmail.com
+
+For Verify user details
+#git config --list
+================================================================
+Step4: Create some files and add into staging area
+
+For create file
+#vim index.html
+welcome pune website
+:wq
+
+For check git status
+#git status
+
+For add file into staging area
+#git add index.html
+
+#git status
+
+For unstaged file
+#git rm --cached index.html
+
+For add all file into staging area
+#git add .
+
+===========================================================
+Step5: Add file staging area to local repo
+
+#git status
+
+For add into local repo
+#git commit -m "my first index page code" index.html
+
+#git status
+
+For check git local repo log
+#git log
+======================================================
+step6: Modify working area index.html
+
+#vim index.html
+welcome pune website
+new code is here   ( we add second line)
+:wq
+
+#git status
+
+we need to add modified file in to staging area again
+#git add index.html
+
+if we want remove modification in file
+#git restore index.html
+
+===================================================
+Step7: commit modified file 
+
+#git add .
+
+
+if we want, remove modifictaion fro staging area
+#git restore --staged index.html
+or 
+#git commit -m "modify index page" index.html
+#git log
+
+For show detail of code with help of commit ID
+#git log
+#git show <Commit ID>
+
+eg.
+git show 6e9c8fb278f7443a0efac2c338a9e9c5ece24d75
+
+===============================================================================
+step8: add commited file into central repo
+
+Create github account (open we browser)
+https://github.com    - signup - create account.
+
+after create account - login - create repository (project24) - create repository
+==================================================
+Step 9. For upload project code into central repo (project24) create token
+
+click on account logo - settings - developer settings - personal access tokens - token (classic) - generate new token - generate new token(classic) - Note(awsproject) - Expiration (90 days) - Select Scopes - generate token.
+
+Copy generate token save it on safe location.
+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
+====================================================
+Step10. For upload code from developer system
+
+#git remote add origin https://github.com/hackwithabhi/project24.git
+
+push file using authenication token
+#git push https://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@github.com/hackwithabhi/project24.git
+
+syntax of above command:
+#git push https://<git token>@github.com/<account_name>/<project_name>.git
+
+After push code go into central repo and verify file is uploaded or not
+===================================================================================
+===================================================================================
+===================================================================================
+Step11: Now we install git into windows 10 (Chennai Developer)
+
+login into windows 10.
+
+download git for windows
+https://git-scm.com/downloads/win
+click on "64-bit Git for windows setup"
+
+wait for download, after download double click on set file Next -Next - Next - Finish.
+======================================================================================
+Step12: open git bash shell
+StartMenu - gitbash -
+
+$mkdir /c/mumbaigit
+ $cd  /c/mumbaigit
+$git init
+
+$git config --global user.name harry
+$git config --global user.email harry@gmail.com
+
+$git config --list
+
+Crete login.html file
+$vim login.html
+sample code for login page
+:wq
+
+$git add .
+$git commit -m "first code of login page"  login.html
+$git log
+======================================================================================
+Step11: 
+git remote add origin https://github.com/hackwithabhi1/pune3pmproject.git
+
+For rebase with current master branch
+$git config pull.rebase false
+$git config pull.rebase true
+
+For pull code of central repo (push by other developers)
+
+$git pull https://github.com/hackwithabhi1/pune3pmproject.git
+
+
+Push our commited file into central repo
+  
+#git push https://ghp_avT6h9mmHPfsFsDKM4OYs0FT5V1BsgX1sanxaF@github.com/hackwithabhi1/pune3pmproject.git
+
+go to central repo and verify harry file available or not(github.como)
+=================================================================================
+
+Step12: pull harry updated file in central repo
+
+login into sara gitrepo
+#git pull https://github.com/hackwithabhi1/pune3pmproject.git
+
+Note: if required rebase or merge
+For rebase with current master branch
+#git config pull.rebase false
+#git config pull.rebase true
+
+#ls
+=====================================================================================
+
+
