@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  server1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-08718895af4dfa033
+      InstanceType: t2.micro
+      KeyName: Linux-Mumbai-Keypair-2024
+      SecurityGroupIds:
+        - sg-0cdca0b8127d658cb
+      SubnetId: subnet-06af79ab48d178236
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install docker wget unzip -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page283/webuild.zip
+          sudo unzip webuild.zip
+          sudo mkdir /myweb
+          sudo chmod 777 /myweb
+          sudo cp -rvf construction-company-website-template-free/* /myweb/
+          sudo docker run -dt --name=nginx -v /myweb/:/usr/share/nginx/html/ --privileged=true -t -p 80:80 nginx
+      Tags:
+        - Key: Name
+          Value: Amazon-Server
+  server2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0522ab6e1ddcc7055
+      InstanceType: t2.micro
+      KeyName: Linux-Mumbai-Keypair-2024
+      SecurityGroupIds:
+        - sg-0cdca0b8127d658cb
+      SubnetId: subnet-06af79ab48d178236
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo apt-get update -y
+          sudo apt-get install docker.io wget unzip -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page283/bloscot.zip
+          sudo unzip bloscot.zip
+          sudo mkdir /myweb
+          sudo chmod 777 /myweb
+          sudo cp -rvf html/* /myweb/
+          sudo docker run -dt --name=nginx -v /myweb/:/usr/share/nginx/html/ --privileged=true -t -p 80:80 nginx
+      Tags:
+        - Key: Name
+          Value: Ubuntu-Server

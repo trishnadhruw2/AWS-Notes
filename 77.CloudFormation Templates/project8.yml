@@ -1,0 +1,351 @@
+Description:  This template deploys a VPC, with a pair of public and private subnets spread
+  across two Availability Zones. It deploys an internet gateway, with a default
+  route on the public subnets.
+
+Parameters:
+  EnvironmentName:
+    Description: An environment name that is prefixed to resource names
+    Type: String
+
+  VpcCIDR:
+    Description: Please enter the IP range (CIDR notation) for this VPC
+    Type: String
+    Default: 10.0.0.0/16
+
+  PublicSubnet1CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the first Availability Zone
+    Type: String
+    Default: 10.0.1.0/24
+
+  PublicSubnet2CIDR:
+    Description: Please enter the IP range (CIDR notation) for the public subnet in the second Availability Zone
+    Type: String
+    Default: 10.0.2.0/24
+#================================Customize it=================================== 
+  AMIIDWIN:
+    Description: AMI ID For launch Windows Server Instance
+    Type: String
+    Default: ami-053284fc22a2c3f82
+    
+  AMIIDLinux:
+    Description: AMI ID For launch Amazon Linux2023 Instance
+    Type: String
+    Default: ami-08718895af4dfa033
+    
+  UBUIDLinux:
+    Description: AMI ID For launch Ubuntu Server 24.04 Instance
+    Type: String
+    Default: ami-0522ab6e1ddcc7055
+    
+  winaccesskey:
+    Description: windows server pem access key
+    Type: String
+    Default: Windows-Mumbai-Keypair-2024
+    
+  linuxaccesskey:
+    Description: linux server ppk access key
+    Type: String
+    Default: Linux-Mumbai-Keypair-2024
+#======================================================================================================= 
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Ref EnvironmentName
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 0, !GetAZs '' ]
+      CidrBlock: !Ref PublicSubnet1CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ1)
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [ 1, !GetAZs  '' ]
+      CidrBlock: !Ref PublicSubnet2CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Public Subnet (AZ2)
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName} Public Routes
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
+  NoIngressSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: "no-ingress-sg"
+      GroupDescription: "Security group with no ingress rule"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '3389'
+          ToPort: '3389'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '8080'
+          ToPort: '8080'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '8090'
+          ToPort: '8090'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '3306'
+          ToPort: '3306'
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: '8081'
+          ToPort: '8081'
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref VPC
+#=========================Create Windows Server============================================== 
+  WindowsServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      ImageId: !Ref AMIIDWIN
+      KeyName: !Ref winaccesskey
+      SecurityGroupIds:
+        - !Ref NoIngressSecurityGroup
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        -
+          Key: Name
+          Value: Windows-Server2022
+#=========================Create Amazon Linux2023 Apache Server==============================================  
+  ApacheServer:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref AMIIDLinux
+      InstanceType: t2.micro
+      KeyName: !Ref linuxaccesskey
+      SecurityGroupIds:
+        - !Ref NoIngressSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install httpd wget unzip -y
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page283/webuild.zip
+          sudo unzip webuild.zip
+          sudo cp -rvf construction-company-website-template-free/* /var/www/html/
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        -
+          Key: Name
+          Value: ApacheWebServer
+#=========================Create Docker (nginx and httpd) Server============================== 
+  DockerServer:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref AMIIDLinux
+      InstanceType: t2.micro
+      KeyName: !Ref linuxaccesskey
+      SecurityGroupIds:
+        - !Ref NoIngressSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo mkdir /web
+          sudo chmod 777 /web
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page291/edu-meeting.zip
+          sudo unzip edu-meeting.zip
+          sudo cp -rvf /templatemo_569_edu_meeting/* /web/          
+          sudo docker run -dt --name=cont1 -t -p 8080:80 -v /web/:/usr/share/nginx/html/ --privileged=true nginx
+          sudo docker run -dt --name=cont2 -t -p 8090:80 hackwithabhi/hpproject:latest
+          sudo mkdir /web1
+          sudo chmod 777 /web1
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page291/carserv.zip
+          sudo unzip carserv.zip
+          sudo cp -rvf /car-repair-html-template/* /web1/ 
+          sudo docker run -dt --name=cont3 -t -p 8081:80 -v /web1/:/usr/local/apache2/htdocs/ --privileged=true httpd
+          
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        -
+          Key: Name
+          Value: DockerServer
+#=========================Create Ubuntu Server============================================== 
+  UbuntuServer:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref UBUIDLinux
+      InstanceType: t2.micro
+      KeyName: !Ref linuxaccesskey
+      SecurityGroupIds:
+        - !Ref NoIngressSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo apt-get update -y
+          sudo apt-get install apache2 -y
+          sudo systemctl start apache2
+          sudo systemctl enable apache2
+          sudo apt-get install unzip -y
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page293/fonicy.zip
+          sudo unzip fonicy.zip
+          sudo cp -rvf /fonicy-html/* /var/www/html/
+          sudo systemctl restart apache2
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        -
+          Key: Name
+          Value: UbuntuWebServer
+#===================================Tomcat Server==============================================
+  TomCatServer:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref AMIIDLinux
+      InstanceType: t2.micro
+      KeyName: !Ref linuxaccesskey
+      SecurityGroupIds:
+        - !Ref NoIngressSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo docker pull tomcat
+          sudo mkdir /myapp
+          sudo chmod 777 /myapp
+          sudo wget https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war
+          sudo cp -rvf /sample.war /myapp/
+          sudo docker run -dt --name=tomcat -t -p 80:8080 -v /myapp/:/usr/local/tomcat/webapps tomcat
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        -
+          Key: Name
+          Value: TomCatServer
+#====================================MySQL in Container=========================================
+  MySQLServer:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref AMIIDLinux
+      InstanceType: t2.micro
+      KeyName: !Ref linuxaccesskey
+      SecurityGroupIds:
+        - !Ref NoIngressSecurityGroup
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo docker pull tomcat
+          sudo docker run -dt -t -p 3306:3306 --name=mysql -e MYSQL_ROOT_PASSWORD='india' mysql
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        -
+          Key: Name
+          Value: MySQLServer
+#===============================================================================================
+Outputs:
+  VPC:
+    Description: A reference to the created VPC
+    Value: !Ref VPC
+
+  PublicSubnets:
+    Description: A list of the public subnets
+    Value: !Join [ ",", [ !Ref PublicSubnet1, !Ref PublicSubnet2 ]]
+
+  PublicSubnet1:
+    Description: A reference to the public subnet in the 1st Availability Zone
+    Value: !Ref PublicSubnet1
+
+  PublicSubnet2:
+    Description: A reference to the public subnet in the 2nd Availability Zone
+    Value: !Ref PublicSubnet2
+
+  NoIngressSecurityGroup:
+    Description: Security group with no ingress rule
+    Value: !Ref NoIngressSecurityGroup
+    
+  DockerServer:
+    Description: Docker server info
+    Value: !GetAtt DockerServer.PublicIp
+    
+  ApacheServer:
+    Description: Apache Server Public IP
+    Value: !GetAtt ApacheServer.PublicIp
+
+  WindowsServer:
+    Description: windows Server Public IP
+    Value: !GetAtt WindowsServer.PublicIp
+    
+  UbuntuServer:
+    Description: Ubuntu Server Public IP
+    Value: !GetAtt UbuntuServer.PublicIp
+    
+  TomCatServer:
+    Description: Tomcat Server Public IP
+    Value: !GetAtt TomCatServer.PublicIp   
+    
+  MySQLServer:
+    Description: MySQL Server Public IP
+    Value: !GetAtt MySQLServer.PublicIp
+    

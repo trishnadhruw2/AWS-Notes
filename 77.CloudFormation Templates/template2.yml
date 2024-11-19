@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  DevEC2Instance1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-08718895af4dfa033
+      InstanceType: t2.micro
+      KeyName: Linux-Mumbai-Keypair-2024
+      SecurityGroupIds:
+        - sg-0cdca0b8127d658cb
+      SubnetId: subnet-06af79ab48d178236
+      Tags:
+        -
+          Key: Name
+          Value: Amazon-Server-2023
+  DevEC2Instance2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-0522ab6e1ddcc7055
+      InstanceType: t2.micro
+      KeyName: Linux-Mumbai-Keypair-2024
+      SecurityGroupIds:
+        - sg-0cdca0b8127d658cb
+      SubnetId: subnet-06af79ab48d178236
+      Tags:
+        -
+          Key: Name
+          Value: Ubuntu-Server-24.04

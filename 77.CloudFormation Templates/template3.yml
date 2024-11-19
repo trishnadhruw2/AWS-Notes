@@ -1,0 +1,22 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  server1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-08718895af4dfa033
+      InstanceType: t2.micro
+      KeyName: Linux-Mumbai-Keypair-2024
+      SecurityGroupIds:
+        - sg-0cdca0b8127d658cb
+      SubnetId: subnet-06af79ab48d178236
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install httpd -y
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
+          sudo echo "<html><head><title>Web1</title></head><body bgcolor=skyblue><h2>Welcome to Webserver1</h2></body></html>" > /var/www/html/index.html
+      Tags:
+        - Key: Name
+          Value: Amazon-Webserver1

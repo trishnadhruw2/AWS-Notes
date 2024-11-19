@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: 2010-09-09
+Resources:
+  server1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-08718895af4dfa033
+      InstanceType: t2.micro
+      KeyName: Linux-Mumbai-Keypair-2024
+      SecurityGroupIds:
+        - sg-0cdca0b8127d658cb
+      SubnetId: subnet-06af79ab48d178236
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install httpd wget unzip -y
+          sudo systemctl start httpd
+          sudo systemctl enable httpd
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page284/painter.zip
+          sudo unzip painter.zip
+          sudo cp -rvf painting-company-website-template/* /var/www/html/
+      Tags:
+        - Key: Name
+          Value: Apache-Webserver
+  server2:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: ami-08718895af4dfa033
+      InstanceType: t2.micro
+      KeyName: Linux-Mumbai-Keypair-2024
+      SecurityGroupIds:
+        - sg-0cdca0b8127d658cb
+      SubnetId: subnet-06af79ab48d178236
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo yum install nginx wget unzip -y
+          sudo systemctl start nginx
+          sudo systemctl enable nginx
+          sudo wget https://www.free-css.com/assets/files/free-css-templates/download/page287/onix-digital.zip
+          sudo unzip onix-digital.zip
+          sudo cp -rvf templatemo_565_onix_digital/* /usr/share/nginx/html/
+      Tags:
+        - Key: Name
+          Value: Nginx-Webserver
